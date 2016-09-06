@@ -1,0 +1,58 @@
+/prep7
+*get, actuator, ELEM, 0, NUM, MAX
+*if, arg1, eq, 1, then
+EMODIF, actuator, 1, 1, 7
+*elseif, arg1, eq, 2, then
+EMODIF, actuator, 1 ,3,5
+*endif
+
+/solu
+/esha,1
+st = 235 ! target stress level
+error_t = 0.0005 ! target error
+error = 1 ! initial
+f1 = 0
+f2 = 120 ! initial
+s1 = 0
+s2 = 0
+
+*dowhile, error, gt, error_t
+  /solu
+  f,10,FY,-gravity*f2
+  acel,,2*gravity
+  solve
+  /post1
+  plns,s,eqv
+  s1 = s2
+  *get, s2, plnsol,0,max
+  ft = (st-s2)/((s2-s1)/(f2-f1))+f2 ! iterator, so clean
+  f1 = f2
+  f2 = ft
+  error = s2/st-1
+*enddo
+
+/post1
+/pbc,nfor,,1
+/pbc,cp,,1
+/dscale,all,1.0
+/esha,1
+plns,s,x
+/show,PNG,png
+/rep
+/show,close
+
+*get, reach_x, NODE, 10, U, X
+*get, reach_y, NODE, 10, U, Y
+*get, s_fwd, ELEM, 1, smisc, 31
+*get, s_aft, ELEM, 2, smisc, 31
+*get, f_act, ELEM, actuator, smisc, 1
+
+reach_x = reach_x+nx(10)
+reach_y = reach_y+ny(10)
+
+/out, curve, out,,append
+*vwrite, reach_x, reach_y, f2, s_fwd, s_aft, f_act/1000, d23
+(7F8.0)
+/out
+
+

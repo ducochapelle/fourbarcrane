@@ -1,0 +1,18 @@
+! units
+! mm / tonne / seconds
+! Newton (tonne*mm/s/s) / MPa (Newton / mm / mm)
+
+fini $ /clear, nostart
+
+/out, curve,out
+*vwrite, 'reach', 'height', 'load', 'fwds', 'afts', 'actf', 'actd'
+(7A8)
+*vwrite, '[mm]', '[mm]', '[t]', '[MPa]', '[MPa]', '[kN]', '[mm]'
+(7A8)
+/out
+
+*do,i,-20,50,5
+  fourbar_B, i
+  fourbar_C, 2
+*enddo
+

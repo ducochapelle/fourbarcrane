@@ -1,0 +1,117 @@
+*AFUN, deg
+gravity = 9806 ! mm/s/s
+
+size_f = 3000
+
+base_w = 1*size_f
+base_h = sin(30)*size_f
+beam_fwd = 3*size_f
+beam_aft = 3*size_f
+beam_top = 1*size_f
+beam_lif = 3*size_f
+
+alpha = 0
+x1 = 0
+y1 = 0
+x2 = -base_w
+y2 = base_h
+x3 = sin(alpha)*beam_fwd
+y3 = cos(alpha)*beam_fwd
+x4 = -2603.11,
+y4 = 10491.2
+x5 = 2603.11/beam_top*beam_lif
+y5 = (beam_fwd-10491.2)/beam_top*beam_fwd+beam_fwd
+
+!    4
+!   / 3
+!  / / \  
+! 2 /   5
+!  1
+
+
+/prep7
+MPTEMP,1,0  
+MPDATA,DENS,1,,7860e-12 
+MPDATA,EX,1,,210000 
+MPDATA,PRXY,1,,0.3  
+
+ET,1,LINK180
+ET,2,BEAM188
+
+R,1,110**2,0   !( elem, area, mass/length)
+
+SECTYPE,   1, BEAM, CTUBE, , 0   
+SECOFFSET, CENT 
+SECDATA,110,140,12  ! Ri Ro n
+
+SECTYPE,   2, BEAM, CSOLID, , 0   
+SECOFFSET, CENT 
+SECDATA,70 ! R
+
+SECTYPE,   3, BEAM, HREC, , 0   
+SECOFFSET, CENT 
+SECDATA,500,500,40,40,40,40  ! B H t t
+
+SECTYPE,   4, BEAM, HREC, , 0   
+SECOFFSET, CENT 
+SECDATA,1000,500,40,40,40,40  ! B H t t
+
+SECTYPE, 5, TAPER
+SECDATA,4,0,0,0
+SECDATA,3,beam_lif,0,0
+
+SECTYPE, 6, TAPER
+SECDATA,4, 0, 0, 0
+SECDATA,3, -beam_top,0,0
+
+
+N,(1:2),x1, y1, (0:1) ! 1,2
+N,(3:4),x2, y2, (0:1) ! 3,4
+N,(5:6),x3, y3, (0:1) ! 5,6
+N,(7:8),x4, y4, (0:1) ! 7,8
+N,(9:10),x5,y5 , (0:1) ! 9,10
+N,11,(x4-x2)/3+x2, (y4-y2)/3+y2
+N,12,(x3-x1)/3+x1, (y3-y1)/3+y1
+
+MAT,1
+TYPE,2
+SECNUM,1
+E,1,5
+! E,12,5
+
+SECNUM,2
+E,3,7
+! E,11,7
+
+SECNUM,6
+E,6, 8
+
+SECNUM,5
+E, 6, 10
+
+TYPE,1
+REAL,1
+! E,1,7
+E,3,5
+
+
+esel, all
+nsle 
+nsel,inverse
+ndele,all
+allsel
+
+
+cp,next,UX,5,6
+cp,next,UY,5,6
+
+cp,next,UX,7,8
+cp,next,UY,7,8
+
+d,1,ux,0,,,,uy,uz
+d,3,ux,0,,,,uy,uz
+
+d,all,uz,0
+d,all, rotx, 0
+d,all, roty, 0
+

@@ -1,0 +1,69 @@
+
+/solu
+nlgeom,1
+/esha,1
+inistate,set,csys,-2
+inistate,set,dtyp,epel
+inistate,define,5,,,,-arg1
+
+
+
+st = 235 ! target stress level
+error_t = 0.0005 ! target error
+error = 1 ! initial
+f1 = 0
+f2 = 120 ! initial
+s1 = 0
+s2 = 0
+
+*dowhile, error, gt, error_t
+  /solu
+  f,10,FY,-gravity*f2
+  solve
+  /post1
+  plns,s,eqv
+  s1 = s2
+  *get, s2, plnsol,0,max
+  ft = (st-s2)/((s2-s1)/(f2-f1))+f2 ! iterator, so clean
+  f1 = f2
+  f2 = ft
+  error = s2/st-1
+*enddo
+
+
+
+/post1
+/pbc,nfor,,1
+/pbc,cp,,1
+/dscale,all,1.0
+/esha,1
+plns,s,x
+/show,PNG,png
+/rep
+/show,close
+
+*get, reach_x, NODE, 10, U, X
+*get, reach_y, NODE, 10, U, Y
+*get, s_fwd, ELEM, 1, smisc, 31
+*get, s_aft, ELEM, 2, smisc, 31
+*get, s_act11, NODE, 1, s, 1
+*get, s_act13, NODE, 1, s, 3
+*get, s_act21, NODE, 3, s, 1
+*get, s_act23, NODE, 3, s, 3
+s_act1 = s_act11+s_act13
+s_act2 = s_act21+s_act23
+*if,abs(s_act1),gt,abs(s_act2),then
+  s_act = s_act1
+*else
+  s_act = s_act2
+*endif
+
+reach_x = (reach_x+nx(10))/1000
+reach_y = (reach_y+ny(10))/1000
+
+/out, curve, out,,append
+*vwrite, reach_x, reach_y, f2, s_fwd, s_aft, s_act
+(6F8.0)
+/out
+
+
