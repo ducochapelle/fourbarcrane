@@ -11,8 +11,16 @@ fini $ /clear, nostart
 (7A8)
 /out
 
+*do, j, 1, 10
+  
+/out, curve,out,,append
+*vwrite, 'configuration', j
+(A8, F8.0)
+/out
+
 *do,i,-20,50,5
-  fourbar_B, i
-  fourbar_C, 2
+fourbar_B, i
+fourbar_C, j
 *enddo
 
+*enddo

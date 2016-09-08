@@ -1,9 +1,15 @@
 /prep7
 *get, actuator, ELEM, 0, NUM, MAX
-*if, arg1, eq, 1, then
-EMODIF, actuator, 1, 1, 7
-*elseif, arg1, eq, 2, then
-EMODIF, actuator, 1 ,3,5
+*if,     arg1, eq, 1, then $ EMODIF, actuator, 1, 1, 7
+*elseif, arg1, eq, 2, then $ EMODIF, actuator, 1 ,3,5
+*elseif, arg1, eq, 3, then $ EMODIF, actuator, 1, 1, 12
+*elseif, arg1, eq, 4, then $ EMODIF, actuator, 1, 3, 11
+*elseif, arg1, eq, 5, then $ EMODIF, actuator, 1, 14, 5
+*elseif, arg1, eq, 6, then $ EMODIF, actuator, 1, 13, 7
+*elseif, arg1, eq, 7, then $ EMODIF, actuator, 1, 11, 12
+*elseif, arg1, eq, 8, then $ EMODIF, actuator, 1, 13, 14
+*elseif, arg1, eq, 9, then $ EMODIF, actuator, 1, 11, 14
+*elseif, arg1, eq,10, then $ EMODIF, actuator, 1, 12, 13
 *endif
 
 /solu
@@ -41,10 +47,19 @@ plns,s,x
 /rep
 /show,close
 
+
 *get, reach_x, NODE, 10, U, X
 *get, reach_y, NODE, 10, U, Y
-*get, s_fwd, ELEM, 1, smisc, 31
-*get, s_aft, ELEM, 2, smisc, 31
+argument1 = 1 $ argument2 = 's_fwd1' $ rtrn = ':LABEL1' $ *GO, :FUN1
+:LABEL1
+argument1 = 1 $ argument2 = 's_fwd2' $ rtrn = ':LABEL2' $ *GO, :FUN1
+:LABEL2
+argument1 = 2 $ argument2 = 's_aft1' $ rtrn = ':LABEL3' $ *GO, :FUN1
+:LABEL3
+argument1 = 2 $ argument2 = 's_aft2' $ rtrn = ':LABEL4' $ *GO, :FUN1
+:LABEL4
+s_fwd = max(s_fwd1, s_fwd2)
+s_aft = max(s_aft1, s_aft2)
 *get, f_act, ELEM, actuator, smisc, 1
 
 reach_x = reach_x+nx(10)
@@ -55,4 +70,32 @@ reach_y = reach_y+ny(10)
 (7F8.0)
 /out
 
+/EOF
 
+:FUN1
+e1 = argument1
+*get, AR21, ELEM, e1, smisc, 31
+*get, AR22, ELEM, e1, smisc, 32
+*get, AR23, ELEM, e1, smisc, 33
+*get, AR24, ELEM, e1, smisc, 34
+*get, AR25, ELEM, e1, smisc, 35
+AR26=max(AR22,AR23,AR24,AR25)+AR21
+AR27=min(AR22,AR23,AR24,AR25)+AR21
+*if,abs(AR26),gt,abs(AR27),then
+  AR28=AR26 $ *else $ AR28=AR27
+*endif
+*get, AR21, ELEM, e1, smisc, 36
+*get, AR22, ELEM, e1, smisc, 37
+*get, AR23, ELEM, e1, smisc, 38
+*get, AR24, ELEM, e1, smisc, 39
+*get, AR25, ELEM, e1, smisc, 40
+AR26=max(AR22,AR23,AR24,AR25)+AR21
+AR27=min(AR22,AR23,AR24,AR25)+AR21
+*if,abs(AR26),gt,abs(AR27),then
+  AR29=AR26 $ *else $ AR29=AR27 
+*endif
+*if,abs(AR28),gt,abs(AR29),then
+  AR30=AR28 $ *else $ AR30=AR29
+*endif
+%argument2% = AR30
+*GO, %rtrn%

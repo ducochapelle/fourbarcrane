@@ -53,7 +53,7 @@ MPDATA,PRXY,1,,0.3
 ET,1,LINK180
 ET,2,BEAM188
 
-R,1,110**2,0   !( elem, area, mass/length)
+R,1,100**2,0   !( elem, area, mass/length)
 
 SECTYPE,   1, BEAM, CTUBE, , 0   
 SECOFFSET, CENT 
@@ -61,7 +61,7 @@ SECDATA,160,200,12  ! Ri Ro n
 
 SECTYPE,   2, BEAM, CSOLID, , 0   
 SECOFFSET, CENT 
-SECDATA,100 ! R
+SECDATA,60 ! R
 
 SECTYPE,   3, BEAM, HREC, , 0   
 SECOFFSET, CENT 
@@ -72,18 +72,22 @@ N,(3:4),x2, y2, (0:1) ! 3,4
 N,(5:6),x3, y3, (0:1) ! 5,6
 N,(7:8),x4, y4, (0:1) ! 7,8
 N,(9:10),x5,y5 , (0:1) ! 9,10
-N,11,(x4-x2)/3+x2, (y4-y2)/3+y2
-N,12,(x3-x1)/3+x1, (y3-y1)/3+y1
+N,12,(x4-x2)/(3)+x2, (y4-y2)/(3)+y2
+N,11,(x3-x1)/(3)+x1, (y3-y1)/(3)+y1
+N,14,(x4-x2)/(4/3)+x2, (y4-y2)/(4/3)+y2
+N,13,(x3-x1)/(4/3)+x1, (y3-y1)/(4/3)+y1
 
 MAT,1
 TYPE,2
-SECNUM,1
-E,1,5
-! E,12,5
+SECNUM,3
+E,1,11
+E,11,13
+E,13,5
 
-SECNUM,2
-E,3,7
-! E,11,7
+SECNUM,3
+E,3,12
+E,12,14
+E,14,7
 
 SECNUM,3
 E,8,6
