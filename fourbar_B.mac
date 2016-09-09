@@ -7,8 +7,7 @@ parres
 *AFUN, deg
 gravity = 9806 ! mm/s/s
 
-size_f = 4000
-beta = 30 ! deg,  base angle
+size_f = 3000
 alpha = arg1 ! tilt of beam_fwd, from vertical
 
 !    4     0-1 = base_w
@@ -18,12 +17,23 @@ alpha = arg1 ! tilt of beam_fwd, from vertical
 ! 01       4-3 = beam_top
 !          3-5 = beam_lif
  
+beta = 30 ! deg,  base angle
 base_w = 2/3*size_f
 base_h = tan(beta)*base_w
 beam_fwd = 3*size_f
 beam_aft = 3*size_f
 beam_top = 2/3*size_f
 beam_lif = 2*size_f
+beam_aft_ex = 2/3*size_f
+
+beta = 60
+base_w   = size_f*2
+base_h   = tan(beta)*base_w
+beam_fwd = size_f*11/3
+beam_aft = size_f*3
+beam_top = size_f*2
+beam_lif = size_f*3
+beam_aft_ex = 2/3*size_f
 
 x1 = 0
 y1 = 0
@@ -42,6 +52,7 @@ x4 = x3-sin(gamma)*beam_top
 y4 = y3-cos(gamma)*beam_top
 x5 = (x3-x4)*(beam_lif)/beam_top+x3
 y5 = (y3-y4)*(beam_lif)/beam_top+y3
+delta = atan((y4-y2)/(x4-x2))
 
 
 /prep7
@@ -76,15 +87,17 @@ N,12,(x4-x2)/(3)+x2, (y4-y2)/(3)+y2
 N,11,(x3-x1)/(3)+x1, (y3-y1)/(3)+y1
 N,14,(x4-x2)/(4/3)+x2, (y4-y2)/(4/3)+y2
 N,13,(x3-x1)/(4/3)+x1, (y3-y1)/(4/3)+y1
+N,15,nx(12)-cos(delta+90)*beam_aft_ex*abs(delta)/delta, ny(12)-sin(delta+90)*beam_aft_ex*abs(delta)/delta
+
 
 MAT,1
 TYPE,2
-SECNUM,3
+SECNUM,1
 E,1,11
 E,11,13
 E,13,5
 
-SECNUM,3
+SECNUM,1
 E,3,12
 E,12,14
 E,14,7
@@ -93,10 +106,13 @@ SECNUM,3
 E,8,6
 E,6,10
 
+! SECNUM,3
+! E,12,15
+
 TYPE,1
 REAL,1
-E,1,7
-! E,3,5
+! E,1,7
+E,3,5
 
 
 esel, all

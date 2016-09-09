@@ -2,25 +2,33 @@
 ! mm / tonne / seconds
 ! Newton (tonne*mm/s/s) / MPa (Newton / mm / mm)
 
-fini $ /clear, nostart
+! fini $ /clear, nostart
 
-/out, curve,out
-*vwrite, 'reach', 'height', 'load', 'fwds', 'afts', 'actf', 'actd'
-(7A8)
-*vwrite, '[mm]', '[mm]', '[t]', '[MPa]', '[MPa]', '[kN]', '[mm]'
-(7A8)
-/out
+! /out, curve,out
+! *vwrite, 'reach', 'height', 'load', 'fwds', 'afts', 'actf', 'actd'
+! (7A8)
+! *vwrite, '[mm]', '[mm]', '[t]', '[MPa]', '[MPa]', '[kN]', '[mm]'
+! (7A8)
+! /out
 
-*do, j, 1, 10
-  
+! *do, j, 1, 10
+j = 2
+fourbar_B
+ 
 /out, curve,out,,append
-*vwrite, 'configuration', j
-(A8, F8.0)
+*vwrite
+(A)
+*vwrite, 'configur', 'beta', 'base_w', 'base_h', 'beam_fwd', 'beam_aft', 'beam_top', 'beam_lif', 'beam_aft_ex'
+(9A8)
+*vwrite, j, beta, base_w, base_h, beam_fwd, beam_aft, beam_top, beam_lif, beam_aft_ex
+(9F8.0)
+*vwrite
+(A)
 /out
 
-*do,i,-20,50,5
+*do,i,0,50,5
 fourbar_B, i
 fourbar_C, j
 *enddo
 
-*enddo
+! *enddo
